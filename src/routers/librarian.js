@@ -26,7 +26,7 @@ router.post('/api/v1/add_book',upload.single('bookImage'),async (req,res,next)=>
         req.body.bookImageData = buffer
         
         const newBook=new BookInfo(req.body)
-        newBook.bookImageUrl=`http://library043.herokuapp.com//cdn/book_image/${newBook._id}`
+        newBook.bookImageUrl=`http://library043.herokuapp.com/cdn/book_image/${newBook._id}`
         await newBook.save()
 
         delete newBook.bookImageData
