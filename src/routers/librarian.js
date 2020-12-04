@@ -5,7 +5,7 @@ const multer = require('multer')
 const sharp = require('sharp')
 
 
-
+///multipart data handler 
 const upload = multer({
 
     limits: {
@@ -18,7 +18,7 @@ const upload = multer({
       cb(undefined, true)
     }
   })
-
+//add a new book 
 router.post('/api/v1/add_book',upload.single('bookImage'),async (req,res,next)=>{
     try{
         
@@ -40,7 +40,54 @@ router.post('/api/v1/add_book',upload.single('bookImage'),async (req,res,next)=>
     }
 })
 
+//update a book info
+router.patch('/api/v1/update_book/:book_id',async(req,res,next)=>{
+  try{
+    const updates = Object.keys(req.body)
+    const allowedUpdates = ['bookName', 'author','genre','releaseDate','visible']
+    const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
 
+    if (!isValidOperation) {
+        return res.status(400).send({"status":"failed", error: `Invalid updates! you can update these value ['bookName', 'author','genre','releaseDate','visible']` })
+    }
+
+    const book = await BookInfo.findOne({ _id: req.params.book_id})
+    if (!book) {
+        return res.status(404).send({"status":"failed", error: 'book data not found!' })
+    }
+
+    updates.forEach((update) => book[update] = req.body[update])
+    await book.save()
+
+    res.status(201).send({
+      "status":"success",
+      "data":book
+  })
+  }catch(e){
+    next(e)
+  }
+})
+
+
+//delete a book info
+router.delete('/api/v1/delete_book/:book_id',async(req,res,next)=>{
+  try{
+    const book= await BookInfo.findOneAndDelete({_id:req.params.book_id})
+    if(!book){
+        return res.status(404).send({"status":"failed", error: 'book data not found!' })
+    }
+    res.status(201).send({
+      "status":"success",
+      "data":book
+  })
+  }catch(e){
+    next(e)
+  }
+})
+
+
+
+//activate a book data
 router.post('/api/v1/activate_book',async (req,res,next)=>{
   try{
       
@@ -62,7 +109,7 @@ router.post('/api/v1/activate_book',async (req,res,next)=>{
   }
 })
 
-
+//deactivate a book data
 router.post('/api/v1/deactivate_book',async (req,res,next)=>{
   try{
       
@@ -83,9 +130,6 @@ router.post('/api/v1/deactivate_book',async (req,res,next)=>{
       next(e)
   }
 })
-
-
-
 
 
 

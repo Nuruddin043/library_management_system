@@ -1,7 +1,7 @@
 const express=require('express')
 const router=new express.Router()
 const BookInfo=require('../models/book_info')
-
+///get all book info
 router.get('/api/v1/all_books',async(req,res,next)=>{
     try{
         const all_books=await BookInfo.find({visible: true})
@@ -14,8 +14,8 @@ router.get('/api/v1/all_books',async(req,res,next)=>{
         next(e)
     }
 })
-
-router.get('/api/v1/single_books/:book_id',async(req,res,next)=>{
+///get a single book info
+router.get('/api/v1/single_book/:book_id',async(req,res,next)=>{
     try{
         const book=await BookInfo.findById(req.params.book_id)
         if(book.visible==true){

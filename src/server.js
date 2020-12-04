@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json())
 
 ///all routes
-const books_record=require('../src/routers/books_record')
+const books_record=require('../src/routers/librarian')
 const student=require('../src/routers/student')
 app.use(books_record)
 app.use(student)
